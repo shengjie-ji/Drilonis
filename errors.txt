@@ -2,9 +2,9 @@
 errors listed below, and try again.
 
 
-File "game/Characters/VisitorCharacter.rpy", line 25: invalid syntax
-        "Combat": [\
-         ^
+File "game/Metadata/globals.rpy", line 13: expected ':' not found.
+    init python -98:
+                ^
 
 Ren'Py Version: Ren'Py 8.3.7.25031702
-Thu Jul  3 01:51:26 2025
+Thu Jul  3 02:28:50 2025

@@ -1,28 +1,30 @@
 ﻿I'm sorry, but an uncaught exception occurred.
 
 While running game code:
-  File "game/Characters/VisitorCharacter.rpy", line 34, in script
-    define yojimbo = VisitorCharacter(
-  File "game/Characters/VisitorCharacter.rpy", line 34, in <module>
-    define yojimbo = VisitorCharacter(
-TypeError: __init__() missing 1 required positional argument: 'dialogue_lines'
+  File "game/scenes/Act I/Tutorial.rpy", line 29, in script call
+    call run_visitor_dialogue
+  File "game/scenes/Act I/Tutorial.rpy", line 2, in script
+    python:
+  File "game/scenes/Act I/Tutorial.rpy", line 5, in <module>
+    for event, lines in current_visitor.dialogue_lines.values():
+ValueError: too many values to unpack (expected 2)
 
 -- Full Traceback ------------------------------------------------------------
 
 Full traceback:
-  File "game/Characters/VisitorCharacter.rpy", line 34, in script
-    define yojimbo = VisitorCharacter(
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\ast.py", line 2248, in execute
-    self.set()
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\ast.py", line 2262, in set
-    value = renpy.python.py_eval_bytecode(self.code.bytecode)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\python.py", line 1211, in py_eval_bytecode
-    return eval(bytecode, globals, locals)
-  File "game/Characters/VisitorCharacter.rpy", line 34, in <module>
-    define yojimbo = VisitorCharacter(
-TypeError: __init__() missing 1 required positional argument: 'dialogue_lines'
+  File "game/scenes/Act I/Tutorial.rpy", line 29, in script call
+    call run_visitor_dialogue
+  File "game/scenes/Act I/Tutorial.rpy", line 2, in script
+    python:
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\ast.py", line 834, in execute
+    renpy.python.py_exec_bytecode(self.code.bytecode, self.hide, store=self.store)
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\python.py", line 1187, in py_exec_bytecode
+    exec(bytecode, globals, locals)
+  File "game/scenes/Act I/Tutorial.rpy", line 5, in <module>
+    for event, lines in current_visitor.dialogue_lines.values():
+ValueError: too many values to unpack (expected 2)
 
 Windows-10-10.0.26100 AMD64
 Ren'Py 8.3.7.25031702
 Drilonis 1.0
-Thu Jul  3 01:52:42 2025
+Thu Jul  3 02:33:55 2025
