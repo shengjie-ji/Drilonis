@@ -1,0 +1,10 @@
+﻿I'm sorry, but errors were detected in your script. Please correct the
+errors listed below, and try again.
+
+
+File "game/Characters/VisitorCharacter.rpy", line 25: invalid syntax
+        "Combat": [\
+         ^
+
+Ren'Py Version: Ren'Py 8.3.7.25031702
+Thu Jul  3 01:51:26 2025
