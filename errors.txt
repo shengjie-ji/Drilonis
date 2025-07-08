@@ -1,0 +1,10 @@
+﻿I'm sorry, but errors were detected in your script. Please correct the
+errors listed below, and try again.
+
+
+File "game/script.rpy", line 247: end of line expected.
+    "So what was he swinging his fucking sword at? The air?" id "edgar_reaction_air":
+                                                                                    ^
+
+Ren'Py Version: Ren'Py 8.3.7.25031702
+Tue Jul  8 01:52:20 2025
