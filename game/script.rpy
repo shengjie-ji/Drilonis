@@ -7,6 +7,8 @@ default current_visitor = None
 default visitor_decision = None
 default visitor_dialogue = ""
 default inspected_items = []
+default duelist_one = None
+default duelist_two = None
 
 define n = Character("Narrator")
 define gc = Character("Guard Captain", color="#ADD8E6", what_color="#ADD8E6") # Light Blue
@@ -19,6 +21,11 @@ default yojimbo = None
 
 init python:
     ### Character ------------------------------------------------------------------------
+    class PlayerCharacter:
+        def __init__(self, name, inventory, **kwargs):
+            self.name = name,
+            self.inventory = inventory
+
     class VisitorCharacter:
         def __init__(self, id, name, inventory, **kwargs):
             self.id           = id
@@ -115,9 +122,32 @@ screen visitor_screening:
 
         text "[visitor_dialogue]" style "say_dialogue" xalign 0.5 yalign 1.0
 
+screen duel:
+
+    # add 'bg combat'
+
+    fixed:
+        xysize (config.screen_width, config.screen_height)
+
+        add duelist_one:
+            xpos 0.25
+            ypos 0.5
+            xanchor 0.5
+            yanchor 0.5
+
+        add duelist_two:
+            xpos 0.75
+            ypos 0.5
+            xanchor 0.5
+            yanchor 0.5
 
 ### GAME START --------------------------------------------------------------------------- 
 label start:
+
+    $ pc = PlayerCharacter(
+        name="Edgar",
+        inventory = {'Sword': 1, 'Light Armor Set (Iron)': 1, 'Healing Potion': 10},
+        )
 
     n "Welcome, to the kingdom of 'Albenora'."
     n "The year is 1400, in the remote hold of 'Drilonis', a bridge exists over a mighty river."
@@ -187,7 +217,6 @@ label tutorial:
             "Are you lads almost finished? I admit I have little to show and less to offer you gentleman."
     ]
 
-
     $ fur_merchant_combat_lines = [
             "No sir, please, why are you doing this?",
             "Please spare me I have a family to provide for!",
@@ -215,21 +244,24 @@ label tutorial:
 
     pause
 
-    return
-
-
 label approval:
 
     n "Everything seems to be in order."
+    jump act_one
 
 label deny:
 
     n "Everything seems to be not in order."
+    jump act_one
 
 label combat:
 
     n "TODO: Make Combat System that is cool and fun." 
+    jump act_one
 
+label act_one:
+
+    n "Now that we got through the basics, do you feel confident in the mechanics so far?"
 
 label random_encounter:
 
@@ -273,15 +305,25 @@ label yojimbo_introduction_event:
         inventory = {'Old Eastern Sword': 1, 'Strange Food Item': 5, 'Short Sword': 1}
         )
   
+    yojimbo "Hail Sir, is that the proper greeting? I come from a far away land and request a duel with a warrior!"
+    n "The man's loud voice was in stark contrast to his modest clothing."
+
+    menu:
+        "You may find a match in me!":
+            n "This mans challenge seems intriguing; it is probably best not to engage, but your curiosity wins over your caution"
+            pc "You may find me an equal match! But first where do you hail from, soldier?"
+        "Apprehend the weirdo":
+            pc "That is not going to happen, a man swinging a sword around in my domain is in no position to make demands, seize him and confiscate his sword."
+
     # Second set of dialogue options for Edgar at the gate
     menu:
-        "Did you manage to restrain him?"
+        "Did you manage to restrain him?":
             e "Did you manage to restrain him?"
             g "We were just about to, sir. Some of the younger guards were scared of the moves he showed us,"
             g "but we took away his strange sword while he was unconscious, and we were just about to throw him in a dungeon"
             g "and notify you."
 
-        "What a bizarre sight. Captain what is the situation?"
+        "What a bizarre sight. Captain what is the situation?":
             e "What a bizarre sight. Captain what is the situation?"
             g "We're not entirely sure, sir. This dirty swordsman was moving like a whirlwind, I never seen someone swing in the air so accurately."
             g "We managed to subdue him when he finally collapsed from exhaustion. Well, more like he tired himself out in a couple seconds."
@@ -292,21 +334,21 @@ label yojimbo_introduction_event:
     n "You nod, contemplating the strange circumstances of the 'Dirty Swordsman'."
     
     menu:
-        "Alright, have him held for now. I want to question him personally when he wakes."
+        "Alright, have him held for now. I want to question him personally when he wakes.":
             g "Yes sir"
             g2 "Yes sir"
-            $ persistent.swordsman_imprison_day = current_day
+            #$ persistent.swordsman_imprison_day = current_day
 
-        "Well at least make sure he gets fed first, I need him alive for questioning."
+        "Well at least make sure he gets fed first, I need him alive for questioning.":
             g "Yes sir"
             g2 "Yes sir"
-            $ persistent.swordsman_imprison_day = current_day
+            #$ persistent.swordsman_imprison_day = current_day
  
-        "Make sure you rough him up a bit, I don't want him to attack me when I question him."
+        "Make sure you rough him up a bit, I don't want him to attack me when I question him.":
             g "Yes sir"
             g2 "Yes sir"
-            $ gs.yojimbo_imprisioned_date      = current_day
-            $ gs.yojimbo_imprisioned_day_count = 1    
+            #$ gs.yojimbo_imprisioned_date      = current_day
+            #$ gs.yojimbo_imprisioned_day_count = 1    
      
     n "You make a mental note that you should check in on the Dirty Swordsman, if only out of curiosity."   
 
@@ -314,6 +356,21 @@ label inspection:
 
     n "TODO: Base this off the tutorial"
 
-label interrogate_prisoner:
+label interrogate_yojimbo:
 
-    n "TODO"
+    n "You enter the tower where the Dirty Swordsman is held."
+    n "There was little need in times past for a proper dungeon, so a little room was set aside for this man."
+    n "The guard's common area was next door, so there was no real need to post guards or even to lock the man in."
+    n "Without his sword the man was hardly any threat, and he even spoke the common tounge. He only ever made one request, to speak to the Lord of the Estate."
+    n "As the acting Lord, you decided to give him his request, but honestly speaking you are curious about this man, who clearly hails from a land beyond the bounds of Albenora and Drilonis."
+    n "What would you like to ask him first?"
+
+    menu:
+        "Where did you learn your swordplay?":
+            pc "Where did you learn your swordplay?"
+
+        "What were you thinking causing such a ruckus with a naked weapon?":
+            pc "What were you thinking causing such a ruckus with a naked weapon?"
+
+        "Are you a spy? Who are you working for?":
+            pc "Are you a spy? Who are you working for?"
