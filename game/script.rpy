@@ -11,10 +11,11 @@ default duelist_one = None
 default duelist_two = None
 
 define n = Character("Narrator")
-define gc = Character("Guard Captain", color="#ADD8E6", what_color="#ADD8E6") # Light Blue
+define gc = Character("Guard Captain Eos", color="#ADD8E6", what_color="#ADD8E6") # Light Blue
 define e  = Character("Edgar", color="#FFA07A", what_color="#FFA07A")          # Light Salmon                                                   # Narrator, no name displayed
 define g  = Character("Guard", color="#90EE90", what_color="#90EE90")          # Light Green
 define g2 = Character("Guard 2")  
+define tax_collector = Character("Ser Jorlen")
 
 default fur_merchant = None
 default yojimbo = None
@@ -23,8 +24,25 @@ init python:
     ### Character ------------------------------------------------------------------------
     class PlayerCharacter:
         def __init__(self, name, inventory, **kwargs):
-            self.name = name,
+            self.name      = name,
             self.inventory = inventory
+            self.strength  = kwargs.get("strength", 3),
+            self.hp        = kwargs.get("hp", 50)
+
+        def attack(self, target):
+            damage     = self.strength
+            target.hp -= damage
+            target.hp  = max(target.hp, 0) 
+
+            if target.hp == 0:
+                target.status = 'Downed'
+
+            renpy.notify(f"{self.name} strikes! {target.name} takes {damage} damage. ({target.hp} HP left)")
+
+    class AllyCharacter:
+        def __init__(self, name, inventory, **kwargs):
+            self.name = name,
+            self.inventory = inventory    
 
     class VisitorCharacter:
         def __init__(self, id, name, inventory, **kwargs):
@@ -141,6 +159,21 @@ screen duel:
             xanchor 0.5
             yanchor 0.5
 
+    frame:
+        xysize (config.screen_width, int(config.screen_height * 0.25))
+        ypos int(config.screen_height * 0.75)
+        background "#2228"
+
+        hbox:
+            spacing 20
+            align (0.5, 0.5)
+
+            textbutton "Strike"    action Function(duelist_one.attack, duelist_two)
+            textbutton "Detain"    action Function(detain)
+            textbutton "Cards"     action Function(use_cards)
+            textbutton "Surrender" action Function(surrender)
+
+
 ### GAME START --------------------------------------------------------------------------- 
 label start:
 
@@ -189,6 +222,12 @@ label tutorial:
         id=1,
         name="Reresh",
         inventory = {'Direwolf Pelt': 10, 'Hunting Sword': 2, 'Trade Contract': 1},
+        )
+
+    $ captain_eos = AllyCharacter(
+        id=3,
+        name="Eos",
+        inventory = {'Wolf Blade': 1, 'Sigil Shield': 1, 'Wife Given Locket': 1},
         )
 
     $ current_visitor = fur_merchant
@@ -247,6 +286,7 @@ label tutorial:
 label approval:
 
     n "Everything seems to be in order."
+    pc "I think everything is in order."
     jump act_one
 
 label deny:
@@ -314,6 +354,7 @@ label yojimbo_introduction_event:
             pc "You may find me an equal match! But first where do you hail from, soldier?"
         "Apprehend the weirdo":
             pc "That is not going to happen, a man swinging a sword around in my domain is in no position to make demands, seize him and confiscate his sword."
+            pc "Have at you!"
 
     # Second set of dialogue options for Edgar at the gate
     menu:
@@ -368,9 +409,66 @@ label interrogate_yojimbo:
     menu:
         "Where did you learn your swordplay?":
             pc "Where did you learn your swordplay?"
+            n "The man did not even look in your general direction. If anything his crossed arms and huffier attitude seemed similar to a petulant child."
+            n "Oh wow there goes the chin, right into the air."
+            n "What's wrong, sir, surely you didn't come all the way here to sit in this room with the likes of me?"
+            yojimbo "Sir, you would deny me a fight when I ask, and when I am relaxing you want to stir the pot!"
+            pc "I will apologize, you seem new to this land-"
+            yojimbo "that is because I am sir, I come at the behest of the Great Emperor, in search of creating a bridge to the Western Lands."
+            pc "That would be us right?"
+            yojimbo "Yes! The Emperor saw in a dream, a dream that foretold of a great kingdom that rose in the west, one that will become a force to be reckoned with."
+            pc "And where is this future kingdom to be staked? There is are two great kingdoms to the left and the right of you."
+            yojimbo "And therefore"
+            n "He said with rising glee"
+            yojimbo "This is where that new kingdom will lie!"
+            pc ".....here? In this keep?"
+            yojimbo "I do not know that word, is that the name of this kingdom?"
+            n "Captain Eos gave a grunt that was as close to laughter that man has ever conjured."
+            n "He had been waiting slightly outside the room, and took a few steps in"
+            captain_eos "You know to a loyal soldier or guard captain, even, that might sound like the embers of treason are brewing."
+            n "The Captain raised you; more with waps and tackles than with hugs and kisses, but he has raised you nonetheless, and you caught yourself smirking at the idea"
+            n "The Notion-"
+            n "That this would be the man to end your bloodline over a misunderstanding of treason."
 
         "What were you thinking causing such a ruckus with a naked weapon?":
             pc "What were you thinking causing such a ruckus with a naked weapon?"
+            yojimbo "Apologies! I am unaware of things work around here, but, I know people. And people will always respond to a man with a naked blade."
+            n "The man smirked, as if he had said something quite clever."
+            yojimbo "That aside, thank you for the rest room, I was running low on provisions, and I appreciate having a safe place to restock."
 
         "Are you a spy? Who are you working for?":
             pc "Are you a spy? Who are you working for?"
+            n "The man made the most token of efforts to hide his amusement before laughing"
+            yojimbo "HAAAAHAAA"
+            yojimbo "I apologize, but the Emperor has much bigger things to oversee than a petty conflict between two nations that where the mud used to build is still wet."
+            pc "Oh? Are you referring to the war between our two kingdoms? Is the scale truly so insignificant to you?"
+
+label the_masked_merchant:
+
+    n "A masked merchant walks into a bar. He says 'Ow'"
+
+label the_albenoraian_collector:
+    
+    n "A sharp knock echoes through the keep, crisp and authoritative. One of your guards steps in a moment later, clearing his throat."
+    g "My lord, a royal tax official has arrived. Says he brings revised collections orders from the capital-"
+    n "Before the guard could finish you interupted his report with an audible sigh. These men always arrive uninvited, and never with good news."
+    pc "Send him in."
+    n "A tall man enters the chamber, dressed not in the finery of a nobleman, but in the layered silks and chain-threaded vestments of a King's agent. His boots are polished, his ledger thick, and his eyes already scanning your hall with quiet judgment."
+    tax_collector "Lord Edgar, I presume. I am Ser Jorlen, royal assessor in service of Bardhyl II, King of Albenora."
+    pc "I’ve received no notice of new assessments."
+    tax_collector "And yet, here I stand. With revised requisitions due to the wartime burdens the Crown bears. Drilonis, as it happens, has been marked for re-evaluation."
+    pc "Re-evaluation?"
+    tax_collector "Yes, my lord. It appears this hold has benefitted from an increase in trade — caravans rerouting to avoid the troubled highways. A blessing, in the eyes of the Crown... and a taxable one."
+    n "He sets the thick ledger down and opens it, flipping to a ribbon-marked page with casual finality."
+    tax_collector "By decree of the Treasury, your hold is to remit twofold the standard tribute for the season. Effective immediately."
+    pc "Twofold? That's nearly our entire grain reserve."
+    tax_collector "Of course, the Crown need not account for every silver. There are... discretionary routes, in the interest of efficiency. And mutual understanding."
+    n "The implication hangs in the air like the smell of damp iron. A bribe — offered without being named. If you pay him, your tribute may 'adjust'. If not, you may find yourself under deeper scrutiny."
+
+    menu:
+        "Challenge the demand openly":
+            pc "Threefold? You would have me starve the village and sell off my steel? Show me the seal — or take this to the King yourself."
+            n "The man narrows his eyes slightly. Not offended, but calculating. He snaps the ledger shut."
+            tax_collector "Very well, my lord. But do remember — not all favors come with second chances."
+
+            # $ set the result of the event flag to "refused"    
