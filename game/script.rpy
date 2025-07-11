@@ -21,6 +21,18 @@ default fur_merchant = None
 default yojimbo = None
 
 init python:
+    ### Story Progression Map
+
+    event_tree = {
+    "start": ["beginning"],
+    "beginning": ["tutorial"],
+    "tutorial": ["tutorial_combat","tutorial_deny","tutorial_approval"],
+    "tutorial_combat": ["act_one"],
+    "tutorial_approval": ["act_one"],
+    "tutorial_deny": ["act_one"],
+    "act_one": ["act_two"] 
+    }
+
     ### Character ------------------------------------------------------------------------
     class PlayerCharacter:
         def __init__(self, name, inventory, **kwargs):
@@ -107,6 +119,47 @@ init python:
 
         return res
 
+### Screen for Event Tree
+#    for label, (x, y) in positions.items():
+#        frame:
+#            xpos x ypos y
+#            textbutton label action Jump(label)
+
+screen event_tree:
+    tag menu
+
+    frame:
+        xpos 100 ypos 100
+        textbutton "start" action Jump("start")
+
+    frame:
+        xpos 200 ypos 100
+        textbutton "beginning" action Jump("beginning")
+
+    frame:
+        xpos 500 ypos 100
+        textbutton "tutorial" action Jump("tutorial")
+
+    frame:
+        xpos 700 ypos 100
+        textbutton "tutorial_approval" action Jump("tutorial_approval")
+
+    frame:
+        xpos 700 ypos 300
+        textbutton "tutorial_deny" action Jump("tutorial_deny")
+
+    frame:
+        xpos 700 ypos 500
+        textbutton "tutorial_combat" action Jump("tutorial_combat")
+
+    frame:
+        xpos 1000 ypos 300
+        textbutton "act_one" action Jump("act_one")
+
+    frame:
+        xpos 1200 ypos 300
+        textbutton "act_two" action Jump("act_two")
+
 ### Screen for Inspection Mode
 
 screen visitor_screening:
@@ -176,6 +229,13 @@ screen duel:
 
 ### GAME START --------------------------------------------------------------------------- 
 label start:
+
+    n "Let's get started"
+    show screen event_tree
+
+    jump beginning
+ 
+label beginning:
 
     $ pc = PlayerCharacter(
         name="Edgar",
@@ -269,32 +329,32 @@ label tutorial:
     if visitor_decision == 'Approve':
 
         hide screen visitor_screening
-        jump approval
+        jump tutorial_approval
 
     if visitor_decision == 'Deny':
 
         hide screen visitor_screening
-        jump deny
+        jump tutorial_deny
 
     if visitor_decision == 'Apprehend':
 
         hide screen visitor_screening
-        jump combat
+        jump tutorial_combat
 
     pause
 
-label approval:
+label tutorial_approval:
 
     n "Everything seems to be in order."
     pc "I think everything is in order."
     jump act_one
 
-label deny:
+label tutorial_deny:
 
     n "Everything seems to be not in order."
     jump act_one
 
-label combat:
+label tutorial_combat:
 
     n "TODO: Make Combat System that is cool and fun." 
     jump act_one
@@ -302,6 +362,10 @@ label combat:
 label act_one:
 
     n "Now that we got through the basics, do you feel confident in the mechanics so far?"
+
+label act_two:
+
+    n "This is a placeholder for Act Two."
 
 label random_encounter:
 
@@ -356,7 +420,6 @@ label yojimbo_introduction_event:
             pc "That is not going to happen, a man swinging a sword around in my domain is in no position to make demands, seize him and confiscate his sword."
             pc "Have at you!"
 
-    # Second set of dialogue options for Edgar at the gate
     menu:
         "Did you manage to restrain him?":
             e "Did you manage to restrain him?"
@@ -470,5 +533,24 @@ label the_albenoraian_collector:
             pc "Threefold? You would have me starve the village and sell off my steel? Show me the seal — or take this to the King yourself."
             n "The man narrows his eyes slightly. Not offended, but calculating. He snaps the ledger shut."
             tax_collector "Very well, my lord. But do remember — not all favors come with second chances."
+            # $ set the result of the event flag to "refused"  
 
-            # $ set the result of the event flag to "refused"    
+        "Give the man what he wants":
+            pc "Surely a man of your station has more pressing matters than counting every last coin owed the Crown?"
+            n "Ser Jorlen does not answer. His hand stills over the ledger, fingers lingering on the parchment like a spider deciding where to weave."
+            pc "And I imagine a few coins gone astray would trouble no one — provided they found their way into the right hands."
+            tax_collector "Tact is a virtue in these trying times, my lord. One hundred silvers. Off the record. No ink, no seal."
+            n "You nod once. A servant is summoned; the purse is passed with the quiet weight of understanding. The ledger closes without further comment."
+            #$ treasury -= 100  # or whatever currency you use
+            tax_collector "Prudent rule, Lord Edgar. I'll see to it that the assessment reflects your... discernment."
+            # $ set the result of the event flag to "bribed"
+
+        "Intimidate Ser Jorlen":
+            pc "You speak boldly for a man with no guards, no writ, and his back to my blade hall."
+            n "He holds his palm in your direction, barely giving you a look."
+            tax_collector "Save it. I travel with an envoy of royal knights, even if you succeed this shortsighted affair, the next one will come with an order of execution. That is, if you think you can take on a Royal Knight."
+            n "A man in massive armor appeared seemingly out of nowhere with the slightest of movements. You look at the sword and armor and see the material is more than adequate to stop you, let alone the skill the man must have."
+            pc "Apologies, ser. I was making an observation, nothing more."
+            tax_collector "Quite. I also observed an additional 50 silver on the ledger, thank you for bringing it to my attention."
+            tax_collector "It is only fortunate that this observation is beneath the notice of the King."
+            n "Unbenownst to the members of this conversation, another person who was also in the habit of observing, had decided it was a good time to leave. "

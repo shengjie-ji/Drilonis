@@ -2,13 +2,7 @@
 errors listed below, and try again.
 
 
-File "game/script.rpy", line 278: Line is followed by a block, despite not being a menu choice. Did you forget a colon at the end of the line?
-    "Did you manage to restrain him?"
-                                     ^
-
-File "game/script.rpy", line 295: Line is followed by a block, despite not being a menu choice. Did you forget a colon at the end of the line?
-    "Alright, have him held for now. I want to question him personally when he wakes."
-                                                                                      ^
+File "game/script.rpy", line 206: Indentation mismatch.
 
 Ren'Py Version: Ren'Py 8.3.7.25031702
-Tue Jul  8 09:34:34 2025
+Fri Jul 11 17:34:24 2025
