@@ -1,74 +1,28 @@
 ﻿I'm sorry, but an uncaught exception occurred.
 
 While running game code:
-  File "game/script.rpy", line 241, in script
-    n "Welcome, to the kingdom of 'Albenora'."
-  File "game/script.rpy", line 128, in execute
-    screen event_tree:
-  File "game/script.rpy", line 128, in execute
-    screen event_tree:
-  File "game/script.rpy", line 131, in execute
-    frame:
-  File "game/script.rpy", line 133, in execute
-    textbutton "start" action [Hide("all", exclude=["event_tree"]), Jump("start")]
-  File "game/script.rpy", line 133, in keywords
-    textbutton "start" action [Hide("all", exclude=["event_tree"]), Jump("start")]
-  File "game/script.rpy", line 133, in <module>
-    textbutton "start" action [Hide("all", exclude=["event_tree"]), Jump("start")]
-TypeError: __init__() got an unexpected keyword argument 'exclude'
+  File "game/script.rpy", line 274, in script
+    pause
+ScriptError: could not find label ''.
 
 -- Full Traceback ------------------------------------------------------------
 
 Full traceback:
-  File "game/script.rpy", line 241, in script
-    n "Welcome, to the kingdom of 'Albenora'."
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\ast.py", line 2586, in execute
-    Say.execute(self)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\ast.py", line 623, in execute
-    renpy.exports.say(who, what, *args, **kwargs)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\exports\sayexports.py", line 132, in say
-    who(what, *args, **kwargs)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\character.py", line 1471, in __call__
-    self.do_display(who, what, cb_args=self.cb_args, dtt=dtt, **display_args)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\character.py", line 1117, in do_display
-    display_say(who,
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\character.py", line 814, in display_say
-    rv = renpy.ui.interact(mouse='say', type=type, roll_forward=roll_forward)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\ui.py", line 301, in interact
-    rv = renpy.game.interface.interact(roll_forward=roll_forward, **kwargs)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\core.py", line 2218, in interact
-    repeat, rv = self.interact_core(preloads=preloads, trans_pause=trans_pause, pause=pause, pause_start=pause_start, pause_modal=pause_modal, **kwargs) # type: ignore
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\core.py", line 2748, in interact_core
-    root_widget.visit_all(lambda d : d.per_interact())
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\displayable.py", line 434, in visit_all
-    d.visit_all(callback, seen)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\displayable.py", line 434, in visit_all
-    d.visit_all(callback, seen)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\displayable.py", line 434, in visit_all
-    d.visit_all(callback, seen)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\screen.py", line 480, in visit_all
-    callback(self)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\core.py", line 2748, in <lambda>
-    root_widget.visit_all(lambda d : d.per_interact())
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\screen.py", line 491, in per_interact
-    self.update()
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\display\screen.py", line 700, in update
-    self.screen.function(**self.scope)
-  File "game/script.rpy", line 128, in execute
-    screen event_tree:
-  File "game/script.rpy", line 128, in execute
-    screen event_tree:
-  File "game/script.rpy", line 131, in execute
-    frame:
-  File "game/script.rpy", line 133, in execute
-    textbutton "start" action [Hide("all", exclude=["event_tree"]), Jump("start")]
-  File "game/script.rpy", line 133, in keywords
-    textbutton "start" action [Hide("all", exclude=["event_tree"]), Jump("start")]
-  File "game/script.rpy", line 133, in <module>
-    textbutton "start" action [Hide("all", exclude=["event_tree"]), Jump("start")]
-TypeError: __init__() got an unexpected keyword argument 'exclude'
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\bootstrap.py", line 359, in bootstrap
+    renpy.main.main()
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\main.py", line 652, in main
+    run(restart)
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\main.py", line 148, in run
+    renpy.execution.run_context(True)
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\execution.py", line 958, in run_context
+    context.run()
+  File "game/script.rpy", line 274, in script
+    pause
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\script.py", line 1103, in lookup
+    raise ScriptError("could not find label '%s'." % str(original))
+ScriptError: could not find label ''.
 
 Windows-10-10.0.26100 AMD64
 Ren'Py 8.3.7.25031702
 Drilonis 1.0
-Fri Jul 11 17:49:14 2025
+Sun Jul 13 17:50:21 2025

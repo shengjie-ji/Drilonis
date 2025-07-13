@@ -16,9 +16,13 @@ define e  = Character("Edgar", color="#FFA07A", what_color="#FFA07A")          #
 define g  = Character("Guard", color="#90EE90", what_color="#90EE90")          # Light Green
 define g2 = Character("Guard 2")  
 define tax_collector = Character("Ser Jorlen")
+default gentleman = Character("Albenoran Gentleman")
 
 default fur_merchant = None
 default yojimbo = None
+
+### Setting Flags for Game Progression
+default memories = {}
 
 init python:
     ### Story Progression Map
@@ -124,6 +128,40 @@ init python:
 #        frame:
 #            xpos x ypos y
 #            textbutton label action Jump(label)
+
+screen map_screen():
+
+    # Top Screen
+    frame:
+        background "#4448"
+        xalign 0.5
+        yalign 0.0
+        xsize config.screen_width
+        ysize int(config.screen_height * (2.0 / 3.0))
+
+    # Map Screen
+    frame:
+        background "#2277CCAA"  # Blue-ish for visibility
+        xsize int(config.screen_width * 0.775)   # sqrt(0.6) ≈ 0.775 for width
+        ysize int(config.screen_height * 0.775)
+        xalign 0.5
+        yalign 0.5        
+
+        # Test Node
+        textbutton "Node A":
+            xpos 100
+            ypos 50
+            action Jump("")
+
+
+    # Bottom Screen
+    frame:
+        background "#8888"
+        xalign 0.5
+        yalign 1.0
+        xsize config.screen_width
+        ysize int(config.screen_height * (1.0 / 3.0))
+
 
 screen event_tree:
     tag menu
@@ -231,7 +269,9 @@ screen duel:
 label start:
 
     n "Let's get started"
-    show screen event_tree
+    show screen map_screen
+
+    pause
 
     jump beginning
  
@@ -416,6 +456,7 @@ label yojimbo_introduction_event:
         "You may find a match in me!":
             n "This mans challenge seems intriguing; it is probably best not to engage, but your curiosity wins over your caution"
             pc "You may find me an equal match! But first where do you hail from, soldier?"
+            # Add met_challenge flag
         "Apprehend the weirdo":
             pc "That is not going to happen, a man swinging a sword around in my domain is in no position to make demands, seize him and confiscate his sword."
             pc "Have at you!"
@@ -533,6 +574,12 @@ label the_albenoraian_collector:
             pc "Threefold? You would have me starve the village and sell off my steel? Show me the seal — or take this to the King yourself."
             n "The man narrows his eyes slightly. Not offended, but calculating. He snaps the ledger shut."
             tax_collector "Very well, my lord. But do remember — not all favors come with second chances."
+            pc "I will not be shaken down. My family has served the King well for generations, but we still need to look after ourselves to look after his interests."
+            n "You think you see what looks like respect on his face, but it fades back into the beauracratic mask"
+            tax_collector "I can verify with the King that the ledger is official, if the royal knights are not sufficient."
+            n "Two knights that seemed to be waiting as if on cue walked in and stared in your general direction. There was no move to threat, but their prescense was threat enough."
+            pc "Very well, I recognize that armor, we all wanted to wear it as boys someday, I shall concede to you this time."
+            tax_collector "No worries. I would try and keep that fire, there will be much need for it in the days ahead. Simply remember where your blade must be pointed first."
             # $ set the result of the event flag to "refused"  
 
         "Give the man what he wants":
@@ -553,4 +600,68 @@ label the_albenoraian_collector:
             pc "Apologies, ser. I was making an observation, nothing more."
             tax_collector "Quite. I also observed an additional 50 silver on the ledger, thank you for bringing it to my attention."
             tax_collector "It is only fortunate that this observation is beneath the notice of the King."
-            n "Unbenownst to the members of this conversation, another person who was also in the habit of observing, had decided it was a good time to leave. "
+            n "Unbenownst to the members of this conversation, another person who was also in the habit of observing, had decided it was a good time to leave."
+
+label yojimbo_history:
+
+
+    scene black
+    with fade
+
+    n "Yojimbo: A History of the Fool"
+
+    pause 1.5
+
+    n "Year 1405" #---------------------------------------
+    #scene senkai_pottery_district with fade
+    n "Yojimbo was born in the pottery district of Senkai, to a humble family neither known or mocked for the quality of their wares."
+    
+    n "Year 1420" #---------------------------------------
+    n "As the third son, he was not particularly talented at the craft, and his disinterest showed."
+    n "He spent his days wandering the town's narrow lanes and open squares, chasing commotion and provoking fights."
+
+    n "He honed his instincts through scraped knuckles and swollen lips, fighting not out of cruelty, but boredom."
+    n "The fights never gave him what he truly sought—until fate placed the stranger into that small town."
+
+    n "Year 1422" #---------------------------------------
+    n "One night, Yojimbo happened to notice a man in a strange outfit. On closer inspection, the man was also foreign, and had a short sword by his hip."
+    n "The outfit did not look comfortable, but the sword told Yojimbo all he needed to know: this was a warrior"
+    yojimbo "Hail, sir~ do you understand me? I request a fight with you! You can even use that tiny blade if you like!"
+    n "The man scowled, but it was clear he did not understand what this young man wanted with him. But Yojimbo did not seem to register as much of a threat, and after a second look, the man began to walk away."
+    yojimbo "WHAT LANGUAGE DO YOU SPEAK SIR?"
+    n "The man doesn't even turn around this time, and keeps walking."
+    n "Yojimbo was never one for an unfair fight, but this was different. This man was a warrior from a different kingdom, and whatever reason he had to be in Senkai, it did not matter. That was all he needed to be to interest Yojimbo."
+    n "Yojimbo started chucking rocks at the man. A few hit, not enough to cause any damage, but it clearly began irritating the man"
+    yojimbo "Like I said, you can use your sword if you like, so this isn't unfair right?"
+    n "With the man's attention, Yojimbo put down the rock in his hand and made some boxing motions to indicate he was ready to fight."
+    n "The man understood this time, and with a slight eye raise, started to drop his sword. Instead of taking a stance, he simply stood there. It took a second for Yojimbo to realize he was waiting."
+    n "Yojimbo lunged at him, they were about equal size, but Yojimbo was confident that he could take the any hit, assuming his own didn't take this guy down first."
+    n "To his surprise, there was no satisfying strike, nor a strong hit to his guard. Instead the sky appeared in front of him. The man had thrown him down, using the very arm that Yojimbo intended to strike the man with."
+    n "The flurry of punches that came to his surprised face, however, felt like home."
+    yojimbo "Ahh, this is what I expected, Win or lose, I guess I lost."
+    n "But as quick as it started, the flurry stopped."
+    gentleman "I have no time to teach you a proper lesson, but I hope this will suffice."
+    n "And with that, the man let go of Yojimbo's arm, and with a nod of his head and a quick confirmation that Yojimbo was still concious, picked up his sword and kept walking."
+    n "Yojimbo lay there for a long few minutes, for the first time just thinking. This wasn't the first time he had been beaten, but this was the first time the outcome confused him."
+    n "He had taunted the man, thrown rocks at him, and instead of beating him down, simply...defeated him. And moved on."
+    n "There was no anger or fury, only...skill."
+    yojimbo "Ahhhhh. I think I got it."
+    n "What Yojimbo realized, was that the reason this man was able to handle himself in a foreign land, was skill. Yojimbo was tough, and he could take winning or losing. But the world is so much bigger than winning or losing. This man was a professional, and however the world worked, being skilled was clearly the answer."
+    yojimbo "I need to see the world, and I need to be skilled to do it."
+    n "Suddenly he sprung up, after a quick inventory to see if anything was broken, he started running after the man."
+
+    n "Year 1426" #---------------------------------------
+    n "In the 12th year of Emperor Qin, the 6th prince, Prince Yin, had gathered an army in rebellion. To meet him in combat and put down the rebellion, Yojimbo was one of 20000 men conscripted into combat."
+
+    n "Year 1428" #---------------------------------------
+
+
+
+
+
+
+
+
+
+
+
