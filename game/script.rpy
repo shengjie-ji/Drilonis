@@ -12,11 +12,14 @@ default duelist_two = None
 
 define n = Character("Narrator")
 define gc = Character("Guard Captain Eos", color="#ADD8E6", what_color="#ADD8E6") # Light Blue
-define e  = Character("Edgar", color="#FFA07A", what_color="#FFA07A")          # Light Salmon                                                   # Narrator, no name displayed
+define e  = Character("Edgar", color="#FFA07A", what_color="#FFA07A")          # Light Salmon
 define g  = Character("Guard", color="#90EE90", what_color="#90EE90")          # Light Green
 define g2 = Character("Guard 2")  
 define tax_collector = Character("Ser Jorlen")
 default gentleman = Character("Albenoran Gentleman")
+define senkai_bar_local_one = Character("Bar Local 1")
+define senkai_bar_local_two = Character("Bar Local 2")
+define yuna = Character("Yuna")
 
 default fur_merchant = None
 default yojimbo = None
@@ -36,6 +39,44 @@ init python:
     "tutorial_deny": ["act_one"],
     "act_one": ["act_two"] 
     }
+
+    ### Item Dictionary 
+
+    items = {
+        "Rations": {
+            "description": "A days worth of rations for the average person."
+        },
+        "Pelts (Direwolf)": {
+            "description": "pelts from a direwolf"
+        },
+        "Pelts (Rabbit)": {
+            "description": "pelts from a rabbit"
+        },
+        "Pelts (Sable)": {
+            "description": "pelts from a sable. how fancy."
+        },
+        "Hunting Sword": {
+            "description": "a blunted sword used for skinning."
+        },
+        "Trade Contract for Sable Pelts": {
+            "description": "A contract for the sale of Sable Pelts",
+            "document_text": """Contract of Trade and Delivery
+                    Year 1428, Autumn Season
+
+                    Let it be known that on this day, the undersigned parties do enter into lawful agreement concerning the acquisition and transport of select sable pelts, to be delivered unto the household of Lord Aldemar Vaerin of the Vaerin house.
+
+                    The agreed terms are as follows:
+
+                    1. The merchant Haldran of ////, being of reputable standing and licensed by charter through the Mercantile Guild of the Northway Roads, shall deliver no fewer than a dozen pelts of northern sable, whole-skinned and unblemished, by the waning of the next moon.
+                    2. Payment, in full weight of silver, shall be rendered upon inspection of the wares at the gatehouse of the Outer Capital.
+                    3. The seal of Lord Vaerin affixed below is sufficient to ensure protection along the King's roads, and any man interfering with bearer or goods bears consequence under the Noble Articles of Trade.
+
+                    Signed by mark and seal,
+
+                    **Haldran of /////**  
+        }
+    }
+
 
     ### Character ------------------------------------------------------------------------
     class PlayerCharacter:
@@ -205,7 +246,7 @@ screen visitor_screening:
 
     frame:
         xalign 0.5
-        yalign 0.25
+        yalign 0.1
         vbox:
             spacing 15
             text "Name: [current_visitor.name]"
@@ -220,16 +261,19 @@ screen visitor_screening:
                 textbutton "Approve" action [SetVariable("visitor_decision", "Approve"), Return()]
                 textbutton "Deny" action [SetVariable("visitor_decision", "Deny"), Return()]
                 textbutton "Apprehend" action [SetVariable("visitor_decision", "Apprehend"), Return()]  
+                textbutton "Audit" action [SetVariable("visitor_decision","Audit"), Return()]
 
     # Bottom-style dialogue display
     frame:
         style "say_window"
         xalign 0.5
-        yalign 0.70
+        yalign 0.80
         xfill True
         yminimum 150
 
         text "[visitor_dialogue]" style "say_dialogue" xalign 0.5 yalign 1.0
+
+### Screen for One on One Combat
 
 screen duel:
 
@@ -264,14 +308,34 @@ screen duel:
             textbutton "Cards"     action Function(use_cards)
             textbutton "Surrender" action Function(surrender)
 
+### Screen for Reading Documents
+
+screen document_screen():
+
+    default document_name = ""
+    default document_text = ""
+
+    tag menu
+
+    frame:
+        align (0.5, 0.5)
+        padding (40, 40)
+        has vbox
+
+    frame:
+        align (0.02, 0.95)
+        has hbox
+
+        textbutton "Back" action Return()
+        # textbutton "Inquire" action Jump("question") TODO: Write a function for this.
+
 
 ### GAME START --------------------------------------------------------------------------- 
 label start:
 
     n "Let's get started"
-    show screen map_screen
-
-    pause
+    #show screen map_screen
+    #pause
 
     jump beginning
  
@@ -321,7 +385,7 @@ label tutorial:
     $ fur_merchant = VisitorCharacter(
         id=1,
         name="Reresh",
-        inventory = {'Direwolf Pelt': 10, 'Hunting Sword': 2, 'Trade Contract': 1},
+        inventory = {'Rations': 9, 'Direwolf Pelt': 100, 'Rabbit Pelt': 200, 'Sable Pelt': 10, 'Hunting Sword': 1, 'Trade Contract for Sable Pelts': 1},
         )
 
     $ captain_eos = AllyCharacter(
@@ -359,7 +423,8 @@ label tutorial:
     $ fur_merchant_combat_lines = [
             "No sir, please, why are you doing this?",
             "Please spare me I have a family to provide for!",
-            "Look I am surrendering please have mercy on this poor merchant, good Lord."
+            "Look I am surrendering please have mercy on this poor merchant, good Lord.",
+            "Elena, I'm sorry..."
     ]
 
     $ fur_merchant.auto_chat('Inspection', fur_merchant_inspection_lines)
@@ -381,12 +446,20 @@ label tutorial:
         hide screen visitor_screening
         jump tutorial_combat
 
+    if visitor_decision == 'Audit':
+
+        hide screen visitor_screening
+        show screen document_screen
+
     pause
 
 label tutorial_approval:
 
     n "Everything seems to be in order."
     pc "I think everything is in order."
+    n "You stamp a document and hand it to him."
+    pc "Present this at the next checkpoint, they will take it and allow you through."
+    fur_merchant "Thank you sir! "
     jump act_one
 
 label tutorial_deny:
@@ -550,6 +623,10 @@ label interrogate_yojimbo:
 label the_masked_merchant:
 
     n "A masked merchant walks into a bar. He says 'Ow'"
+    pc "What was that?"
+    the_masked_merchant "That was me that was me. Owow"
+    pc "Did you...need help?"
+    the_masked_merchant "That's fine, instead can you help me test the shop feature?"
 
 label the_albenoraian_collector:
     
@@ -649,19 +726,38 @@ label yojimbo_history:
     n "What Yojimbo realized, was that the reason this man was able to handle himself in a foreign land, was skill. Yojimbo was tough, and he could take winning or losing. But the world is so much bigger than winning or losing. This man was a professional, and however the world worked, being skilled was clearly the answer."
     yojimbo "I need to see the world, and I need to be skilled to do it."
     n "Suddenly he sprung up, after a quick inventory to see if anything was broken, he started running after the man."
+    n "It was a quick search: there were only a few establishments in town, and his father had told him the best place to find someone was where the drinks were, including yourself. And he was right, the man had taken a seat in the back of the Inn that served as a drinking area for the local residents."
+    yojimbo "Hey Sir, I was hoping you could tea-"
+    n "yojimbo paused. He remembered this man did not speak his language, so he had to come up with some way to communicate."
+    yojimbo "Hey, Yuna"
+    n "He motioned to the barmaid serving some drinks to some locals."
+    yojimbo "can you get a three drinks for that man over there? Just put it on my tab."
+    n "The woman rolled her eyes, almost audibly."
+    senkai_bar_local_one "Uh oh, Yuna's mad. I guess this will be a long winter."
+    senkai_bar_local_two "Or a short summer."
+    n "The two men laughed at the poorly translated joke."
+    yojimbo "I promise I will be good for it one of these days, and then think of the windfall it will be!"
+    n "How right he turned out to be. When the Prince was told of Yojimbo's running tab, he felt so ashamed of him First Blade that he sent double the amount to the Inn with a written apology. Which was delayed as Yojimbo required a month to learn how to write."
+    n "And without a second to wait for poor Yuna to respond, Yojimbo took a seat with the man."
+    gentleman "..."
+    yojimbo "Sir, you must teach me where you learned your craft. Since walking over, I figured out a way to counter that throw, but...you got more tricks in you, don't you? Next time, I may not survive, so"
+    yojimbo "How about we have a few drinks, and you teach me what I need to know?"
+    n "The drinks then slammed on the table, nice and cool from the cellar. no amount of rudeness was going to make Yuna deny proper service."
+    yuna "You WILL pay for these drinks, and not just one day." # Is the village idiot suffice or do I need them to have a relationship?
+    yojimbo "Of course...Of Course! I will! Or maybe my fathe-"
+    yuna "If a single coin thay you give me comes from that poor man I will shove it into your ears until they are open enough to hear me properly. He goes through enough with your silly little fights and..."
+    n "Yuna walk away, too frustrated to even finish her own sentence."
+    gentleman "Whatever you get out of this, you need to apologize to that poor woman. You are not a child."
+    yojimbo "Wha? You speak our language? Why did you wait until now?"
+    gentleman "You were offering free drinks, and I decided to wait until they came."
+    n "The man expected some indignation or anger from the young local, he did not expect to be met with laughter"
+    yojimbo "Ahhhhh see that is what I wanted. You ARE experienced! I want that please. Teach me."
+    gentleman "Teach you what? That move you claim to counter took me months to learn. Join the army, I'm sure if you survive you'll learn plenty."
+    yojimbo "Maybe. But right now, here you are. So..."
+    n "The man found that he quite liked this local boy. He was so straightforward it was easy to forget how rude he was."
+    gentleman "Fine, I'll teach you something. And I think I know what to teach."
 
     n "Year 1426" #---------------------------------------
     n "In the 12th year of Emperor Qin, the 6th prince, Prince Yin, had gathered an army in rebellion. To meet him in combat and put down the rebellion, Yojimbo was one of 20000 men conscripted into combat."
 
     n "Year 1428" #---------------------------------------
-
-
-
-
-
-
-
-
-
-
-

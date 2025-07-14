@@ -1,28 +1,22 @@
 ﻿I'm sorry, but an uncaught exception occurred.
 
 While running game code:
-  File "game/script.rpy", line 274, in script
-    pause
-ScriptError: could not find label ''.
+  File "game/script.rpy", line 392, in script
+    pc "I think everything is in order."
+Exception: Sayer b'pc' is not a function or string.
 
 -- Full Traceback ------------------------------------------------------------
 
 Full traceback:
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\bootstrap.py", line 359, in bootstrap
-    renpy.main.main()
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\main.py", line 652, in main
-    run(restart)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\main.py", line 148, in run
-    renpy.execution.run_context(True)
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\execution.py", line 958, in run_context
-    context.run()
-  File "game/script.rpy", line 274, in script
-    pause
-  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\script.py", line 1103, in lookup
-    raise ScriptError("could not find label '%s'." % str(original))
-ScriptError: could not find label ''.
+  File "game/script.rpy", line 392, in script
+    pc "I think everything is in order."
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\ast.py", line 2586, in execute
+    Say.execute(self)
+  File "C:\Users\jishe\Desktop\New folder (3)\renpy-8.3.7-sdk\renpy\ast.py", line 600, in execute
+    raise Exception("Sayer %s is not a function or string." % self.who.encode("utf-8"))
+Exception: Sayer b'pc' is not a function or string.
 
 Windows-10-10.0.26100 AMD64
 Ren'Py 8.3.7.25031702
 Drilonis 1.0
-Sun Jul 13 17:50:21 2025
+Mon Jul 14 18:45:21 2025
