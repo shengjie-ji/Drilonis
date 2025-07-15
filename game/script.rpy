@@ -12,8 +12,8 @@ default duelist_two = None
 
 define n = Character("Narrator")
 define gc = Character("Guard Captain Eos", color="#ADD8E6", what_color="#ADD8E6") # Light Blue
-define e  = Character("Edgar", color="#FFA07A", what_color="#FFA07A")          # Light Salmon
-define g  = Character("Guard", color="#90EE90", what_color="#90EE90")          # Light Green
+define e  = Character("Edgar", color="#FFA07A", what_color="#FFA07A") # Light Salmon
+define g  = Character("Guard", color="#90EE90", what_color="#90EE90") # Light Green
 define g2 = Character("Guard 2")  
 define tax_collector = Character("Ser Jorlen")
 default gentleman = Character("Albenoran Gentleman")
@@ -73,12 +73,15 @@ init python:
 
                     Signed by mark and seal,
 
-                    **Haldran of /////**  
+                    **Haldran of /////**"""
         }
     }
 
+    ### Battle Manager -----------------------------------------------------------
 
-    ### Character ------------------------------------------------------------------------
+
+
+    ### Character -----------------------------------------------------------------
     class PlayerCharacter:
         def __init__(self, name, inventory, **kwargs):
             self.name      = name,
@@ -169,6 +172,28 @@ init python:
 #        frame:
 #            xpos x ypos y
 #            textbutton label action Jump(label)
+
+### Screen for Player Damage in Combat
+style dmg_text:
+    ##font "gui/fonts/earwig.ttf" TODO:
+    color "#000000"
+    size 80
+    outlines [(4.5, "#ffffff", 3.5, 3.5)]
+
+screen character_dmg():
+    style_group "damage"
+
+    text "[damage]" anchor (0.5,0.5) xpos p.dmg_pos ypos 800 at shake_fade
+    
+    timer 1 action Hide('player_dmg')
+
+screen choose_skill():
+    vobx:    
+        align (0.35, 0.30)
+        textbutton "Attack" align (.5,.5) action Return("attack")
+        textbutton "Defend" align (.5,.5) action Return("defend")
+        textbutton "Use Item" align (.5,.5) action Return("item")
+        textbutton "Cancel" align (.5,.5) action Function(renpy.pop_call), Jump("turn_actions")    
 
 screen map_screen():
 
