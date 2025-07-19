@@ -28,6 +28,15 @@ default yojimbo = None
 default memories = {}
 
 init python:
+
+    ### Database for Player Aggregation
+    import sqlite3
+    import os
+
+    db_path = os.path.join(config.basedir, "data", "player_impact.db")
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
     ### Story Progression Map
 
     event_tree = {
@@ -706,9 +715,11 @@ label the_albenoraian_collector:
 
 label yojimbo_history:
 
-
     scene black
     with fade
+
+    # Notes: Add a reference to senkai nobility being gentle, but not men.
+    # Reference his family not wanting him to leave, or at least reacting.
 
     n "Yojimbo: A History of the Fool"
 
@@ -716,7 +727,7 @@ label yojimbo_history:
 
     n "Year 1405" #---------------------------------------
     #scene senkai_pottery_district with fade
-    n "Yojimbo was born in the pottery district of Senkai, to a humble family neither known or mocked for the quality of their wares."
+    n "Yojimbo was born in the pottery district of Senkai, to a humble family known neither for excellence nor shame in their wares."
     
     n "Year 1420" #---------------------------------------
     n "As the third son, he was not particularly talented at the craft, and his disinterest showed."
@@ -739,7 +750,9 @@ label yojimbo_history:
     n "The man understood this time, and with a slight eye raise, started to drop his sword. Instead of taking a stance, he simply stood there. It took a second for Yojimbo to realize he was waiting."
     n "Yojimbo lunged at him, they were about equal size, but Yojimbo was confident that he could take the any hit, assuming his own didn't take this guy down first."
     n "To his surprise, there was no satisfying strike, nor a strong hit to his guard. Instead the sky appeared in front of him. The man had thrown him down, using the very arm that Yojimbo intended to strike the man with."
-    n "The flurry of punches that came to his surprised face, however, felt like home."
+    n "The flurry of punches that came to his surprised face, however..."
+    pause
+    n "...felt like home."
     yojimbo "Ahh, this is what I expected, Win or lose, I guess I lost."
     n "But as quick as it started, the flurry stopped."
     gentleman "I have no time to teach you a proper lesson, but I hope this will suffice."
@@ -780,9 +793,44 @@ label yojimbo_history:
     gentleman "Teach you what? That move you claim to counter took me months to learn. Join the army, I'm sure if you survive you'll learn plenty."
     yojimbo "Maybe. But right now, here you are. So..."
     n "The man found that he quite liked this local boy. He was so straightforward it was easy to forget how rude he was."
-    gentleman "Fine, I'll teach you something. And I think I know what to teach."
+    n "The man took the first drink, and in a flash quickly emptied it."
+    gentleman "Fine, I'll teach you something. And I think I have a good idea."
+    n "Clearly impatient now that he had the drink payments settled, the man started making a motion to leave."
+    yojimbo "Wait, before you leave, I have to ask, what do I need to do?"
+    n "This question gave the man pause, he couldn't tell if his translation was off, but it was such an odd question."
+    gentleman "To do what, exactly? Do you not wish to fight?"
+    yojimbo "Yes! But I...I do not know how. The brawls in the town don't feel enough, yet, when I imagine joining the army, I do not see glory or skill, but bloodshed and broken families. When I saw you and your skill, to be less of your mercy and manners, I...I just knew there was some other way."
+    n "The man sank back into the seat. He then slowy grabbed for the second drink, taking his time finishing it, still in one massive gulp."
+    n "The man hands yojimbo a small pendant."
+    gentleman "This is the emblem of my family, we are a house of diplomats, but along the way we have gained a lot of experience with foreign warriors, and somewhere down the line we became swordmasters."
+    yojimbo "But you didn't even use the sword to defeat me?"
+    gentleman "Aye. And without more training, that won't change. This emblem *he points to the trinket* is a challenge symbol, anyone who has it in their possession is allowed to challenge a member of our house, and if they win they are awarded with praise."
+    yojimbo "I see, I don't have what it takes now, but I can come find you...wait how do I do that? I never even left this district let alone the nation."
+    gentleman "That is a choice you have to make for yourself, sir. This emblem can sell for quite a few meals here, if you choose to do so I won't stop you. But if you want to challenge me, you need to be ready, and sir you need a lot more experience to have the fight you are looking for."
+    n "Yojimbo understood. This man was giving him a key, a key to see the world, complete with a goal to direct him."
+    yojimbo "Sir, I will take it, I hope you accept my apologies for the rocks-"
+    gentleman "Think nothing of it, fights take on many forms, but for your first lesson, learn how to gauge your opponents skill; there are more than a few people who would've done worse for less, especially outside the borders of your world."
+    n "Yojimbo looked at the man, surprised that he understood what the emblem had done; and he understood that, to some extent, this gentleman probably had to open the world up to himself for the first time."
+    n "That means he also felt the excitement, the fear, the homesickness creeping in. But, it made him the man he is now, and Yojimbo knew nothing else he wanted more."
+    n "The gentleman then took his leave."
+    gentleman "Oh, and sir, the manners you mentioned"
+    yojimbo "Ay?"
+    n "The man smirked, as precocious as this young man was, he was clearly like any other boy, eager to learn. When presented with genuine response, he clearly wished to begin mimicking him, if only with the smaller things at first."
+    gentleman "If you wish to be treated with respect, be sure to first offer it. You call men sirs, you call women ma'am, if there is a preference be sure to do your best to accomodate. And when you leave..."
+    n "The man did a slight bow, it was one that the Emperor would have had his head for, but it clearly conveyed a respect that did not seem to rely on titles or threats."
+    gentleman "Always lower your head, the conventions may be different, but we must express our sincerity, if nothing else."
+    yojimbo "We? What are we?"
+    gentleman "In my country, we are called gentlemen."
+    yojimbo "But, if the world is as violent as you say, are we not fools for doing that?"
+    gentleman "The heart is what matters, sir. If we are called fools, then I shall strike with the Fool's strike. I shall guard with the Fool's guard, and I shall die"
+    gentleman "As a Gentleman. As a Fool. Whatever you wish."
 
     n "Year 1426" #---------------------------------------
     n "In the 12th year of Emperor Qin, the 6th prince, Prince Yin, had gathered an army in rebellion. To meet him in combat and put down the rebellion, Yojimbo was one of 20000 men conscripted into combat."
+    n "He was placed under the banner of Prince Shang, the third prince. Shang was a very good tactician, but his strategy combined with the overwhelming forces gathered to supress Prince Yin's meant there was little chance for anyone to distingush themselves on the battlefield."
 
     n "Year 1428" #---------------------------------------
+
+label the_marking_stone:
+
+    n ""
