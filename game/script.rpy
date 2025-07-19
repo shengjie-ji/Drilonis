@@ -10,6 +10,10 @@ default inspected_items = []
 default duelist_one = None
 default duelist_two = None
 
+## Choice Flags
+
+player_choices = {}
+
 define n = Character("Narrator")
 define gc = Character("Guard Captain Eos", color="#ADD8E6", what_color="#ADD8E6") # Light Blue
 define e  = Character("Edgar", color="#FFA07A", what_color="#FFA07A") # Light Salmon
@@ -69,6 +73,7 @@ init python:
         },
         "Trade Contract for Sable Pelts": {
             "description": "A contract for the sale of Sable Pelts",
+            "type": "Document"
             "document_text": """Contract of Trade and Delivery
                     Year 1428, Autumn Season
 
@@ -83,12 +88,34 @@ init python:
                     Signed by mark and seal,
 
                     **Haldran of /////**"""
-        }
+        },
+        "Wolf Blade": {
+            "descripton": "",
+            "type": "Weapon",
+        },
+        "Sigil Shield": {
+            "descripton": "",
+            "type": "Weapon",
+        },
+        "Wife Given Locket": {
+            "descripton": "A Locket that belong to Captain of the Guard, Eos. His wife gave it to him, and insisted he wore it everywhere for protection. He hadn't the heart to tell her he almost got strangled by it when a drunk strongman tried to take it from him.",
+            "type": "Story",
+        },
+        "Old Eastern Sword": {
+            "descripton": "A sword with a strange curve.",
+            "type": "Weapon",
+        },
+        "Short Sword": {
+            "descripton": "A short sword, useful for closed off area, or as a shield for a longer sword.",
+            "type": "Weapon",
+        },
+        "Strange Food Item": {
+            "descripton": "It's called Dumplings you cultural swine.",
+            "type": "Food",
+        },        
     }
 
     ### Battle Manager -----------------------------------------------------------
-
-
 
     ### Character -----------------------------------------------------------------
     class PlayerCharacter:
@@ -468,16 +495,19 @@ label tutorial:
     if visitor_decision == 'Approve':
 
         hide screen visitor_screening
+        $ player_choices['fur_merchant_inspection'] = 'approved'
         jump tutorial_approval
 
     if visitor_decision == 'Deny':
 
         hide screen visitor_screening
+        $ player_choices['fur_merchant_inspection'] = 'denied'
         jump tutorial_deny
 
     if visitor_decision == 'Apprehend':
 
         hide screen visitor_screening
+        $ player_choices['fur_merchant_inspection'] = 'apprehended'
         jump tutorial_combat
 
     if visitor_decision == 'Audit':
@@ -504,6 +534,14 @@ label tutorial_deny:
 label tutorial_combat:
 
     n "TODO: Make Combat System that is cool and fun." 
+
+    $ elena = VisitorCharacter(
+        id=3,
+        name="Elena",
+        inventory = {
+            'knife': 1
+        })
+
     jump act_one
 
 label act_one:
@@ -514,10 +552,13 @@ label act_two:
 
     n "This is a placeholder for Act Two."
 
+label act_three:
+
+    n "This is the Final Act."
+
 label random_encounter:
 
     n "TODO: Create System to select a random encounter"
-
 
 label yojimbo_introduction_event:
     "A strange report reaches your ears..."
@@ -563,9 +604,10 @@ label yojimbo_introduction_event:
         "You may find a match in me!":
             n "This mans challenge seems intriguing; it is probably best not to engage, but your curiosity wins over your caution"
             pc "You may find me an equal match! But first where do you hail from, soldier?"
-            # Add met_challenge flag
+            $ player_choices['yojimbos_challenge'] = 'accepted'
         "Apprehend the weirdo":
             pc "That is not going to happen, a man swinging a sword around in my domain is in no position to make demands, seize him and confiscate his sword."
+            $ player_choices['yojimbos_challenge'] = 'apprehended'
             pc "Have at you!"
 
     menu:
@@ -589,16 +631,19 @@ label yojimbo_introduction_event:
         "Alright, have him held for now. I want to question him personally when he wakes.":
             g "Yes sir"
             g2 "Yes sir"
+            $ player_choices['yojimbos_captured'] = 'kept'
             #$ persistent.swordsman_imprison_day = current_day
 
         "Well at least make sure he gets fed first, I need him alive for questioning.":
             g "Yes sir"
             g2 "Yes sir"
+            $ player_choices['yojimbos_captured'] = 'fed'
             #$ persistent.swordsman_imprison_day = current_day
  
         "Make sure you rough him up a bit, I don't want him to attack me when I question him.":
             g "Yes sir"
             g2 "Yes sir"
+            $ player_choices['yojimbos_captured'] = 'abused'
             #$ gs.yojimbo_imprisioned_date      = current_day
             #$ gs.yojimbo_imprisioned_day_count = 1    
      
@@ -702,6 +747,8 @@ label the_albenoraian_collector:
             #$ treasury -= 100  # or whatever currency you use
             tax_collector "Prudent rule, Lord Edgar. I'll see to it that the assessment reflects your... discernment."
             # $ set the result of the event flag to "bribed"
+            
+            tax_collector "Now if you pay the tribute that has been agreed upon, I and the Royal Knights will be on our way."
 
         "Intimidate Ser Jorlen":
             pc "You speak boldly for a man with no guards, no writ, and his back to my blade hall."
@@ -712,6 +759,8 @@ label the_albenoraian_collector:
             tax_collector "Quite. I also observed an additional 50 silver on the ledger, thank you for bringing it to my attention."
             tax_collector "It is only fortunate that this observation is beneath the notice of the King."
             n "Unbenownst to the members of this conversation, another person who was also in the habit of observing, had decided it was a good time to leave."
+            tax_collector "If that is all, then I believe I made my point clear. Please give me the tribute you owe and I will be on my way."
+            n "With no options left, you pay the wretched man the increase tribute and more for your intimidation."
 
 label yojimbo_history:
 
